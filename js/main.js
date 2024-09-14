@@ -2,80 +2,119 @@
     BASE DE DATOS FALSA (Tener abierta la consola para la funcion mostrar)
 */
 
-//! La Base de Datos (Usuario y Contrasena)
-let BD = {};
+let usuarios = [];
 
-// Funcion booleana para saber si la BD esta vacia
-const estaBDVacio = () => {
-    if (Object.keys(BD).length === 0) {
-        return true;
+class Usuario {
+    constructor(name, password, email, age, tm_reg) {
+        this._name = name;
+        this._password = password;
+        this._email = email;
+        this._age = age;
+        this._tm_reg = tm_reg;
     }
-    return false;  //Tambien se podria hacer de una linea con 'return Object.keys(BD).length === 0; al ser 1 instruccion'
+
+    // Getters
+    get name() {
+        return this._name;
+    }
+
+    get password() {
+        return this._password;
+    }
+
+    get email() {
+        return this._email;
+    }
+
+    get age() {
+        return this._age;
+    }
+
+    get tm_reg() {
+        return this._tm_reg;
+    }
+
+    // Setters
+    set name(newName) {
+        this._name = newName;
+    }
+
+    set password(newPassword) {
+        this._password = newPassword;
+    }
+
+    set email(newEmail) {
+        this._email = newEmail;
+    }
+
+    set age(newAge) {
+        this._age = newAge;
+    }
+
 }
 
-// Funcion booleana para saber si ya fue usado el usuario
-const estaUsuarioOcupado = (nombreUsuario) => {
-    for (let usuario in BD) {
-        if (nombreUsuario === usuario) {
-            return true;
-        }
+// Funcion booleana para saber si la BD esta vacia
+const estaUsuariosVacio = () => {
+    if (usuarios.length === 0 ){
+        return true;
     }
     return false;
 }
 
 //! Funciones del menu Principal
 const registrar = () => { //Registrando 
-    let usuario = prompt("Registra un usuario: ");
-    let contrasena = prompt("Registra una contrasena: ");
+    let nombreReg = prompt("Registra un usuario: ");
+    let contrasenaReg = prompt("Registra una contrasena: ");
+    let emailReg = prompt("Coloca tu email: ")
+    let edadReg = prompt("Coloca tu edad: ")
+    let tiempoReg = new Date();
+    
 
-    if ((usuario !== "") && (contrasena !== "") && (!estaUsuarioOcupado(usuario)) ) {
-        BD[usuario] = contrasena;
-        alert("Usuario registrado correctamente");
-    }
-    else {
-        alert("Usuario ocupado o no escribio ningun valor");
-    }
+    let usuarioReg = new Usuario(nombreReg, contrasenaReg, emailReg, edadReg, tiempoReg);
+
+    usuarios.push(usuarioReg);
 }
 
 const mostrar = () => { // Mostrando a los usuarios de la Base de Datos
-    if (estaBDVacio()) {
+    if (estaUsuariosVacio()) {
         alert("No hay nada que mostrar...");
     }
     else {
         console.clear(); // Limpiamos consola
         alert("Se mostraran en la consola");
-    
-        for (let usuario in BD) {
-            console.log(`Usuario: ${usuario}, Contrasena: ${BD[usuario]}`); // Comillas invertidas para esta sintaxis
+        console.log("Name, Password, Email, Age, Time of register")
+        for (const usuario of usuarios) {
+            console.log(`${usuario.name}, ${usuario.password}, ${usuario.email}, ${usuario.age}, ${usuario.tm_reg}`); // Comillas invertidas para esta sintaxis
         }
     }
 }
 
 const eliminar = () => { // Eliminar usuario de la Base de Datos
-    if (estaBDVacio()) {
+    if (estaUsuariosVacio()) {
         alert("No hay nada que eliminar...");
     }
     else {
-        let usuario = prompt("Ingresa el usuario a eliminar: ");
+        let emailDel = prompt("Ingresa el email a eliminar: ");
     
-        if (usuario in BD) {
-            delete BD[usuario];
-            alert("Usuario eliminado");
-        }
-        else {
-            alert("Usuario no encontrado...");
+        for (let usuario of usuarios) {
+            if (usuario.email === emailDel) {
+                let pos = usuarios.indexOf(usuario);
+                usuarios.splice(pos, 1);
+                break;
+            }
         }
     }
 }
 
 const vaciar = () => { // Vacear Base de Datos
-    BD = {};
-    alert("Se ha vaceado la base de datos...");
+    usuarios = [];
+    alert("Se ha vaciado la base de datos...");
 }
 
 const salir = () => { // Saliendo del Menu
     alert("Haz salido del programa..."); // Tambien se podria hacer en una sola linea omitiendo las llaves al ser 1 instruccion
 }
+
 
 //! Menu Principal
 function BASE_DE_DATOS() {
@@ -98,6 +137,3 @@ function BASE_DE_DATOS() {
     } while (opc != 0);
 }
 
-
-//! Lanzando funcion principal
-BASE_DE_DATOS();
