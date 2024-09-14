@@ -53,6 +53,24 @@ class Usuario {
 
 }
 
+//! Funciones de Comprobacion
+//Si se repite el nombre de usuario
+const existeNombre = (nombreUsuario) => {
+    const nombreUsuarios = usuarios.map((usuario) => usuario.name);
+    if (nombreUsuarios.includes(nombreUsuario)) {
+        return true;
+    }
+    return false;
+}
+// Si se repite email
+const existeEmail = (emailUsuario) => {
+    const emailUsuarios = usuarios.map((usuario) => usuario.email);
+    if (emailUsuarios.includes(emailUsuario)) {
+        return true;
+    }
+    return false;
+}
+
 // Funcion booleana para saber si la BD esta vacia
 const estaUsuariosVacio = () => {
     if (usuarios.length === 0 ){
@@ -64,14 +82,23 @@ const estaUsuariosVacio = () => {
 //! Funciones del menu Principal
 const registrar = () => { //Registrando 
     let nombreReg = prompt("Registra un usuario: ");
+    if (existeNombre(nombreReg)) {
+        alert("Nombre elegido ya existe");
+        return;
+    }
     let contrasenaReg = prompt("Registra una contrasena: ");
     let emailReg = prompt("Coloca tu email: ")
+    if (existeEmail(emailReg)) {
+        alert("Email ya existe");
+        return;
+    }
     let edadReg = prompt("Coloca tu edad: ")
     let tiempoReg = new Date();
 
     let usuarioReg = new Usuario(nombreReg, contrasenaReg, emailReg, edadReg, tiempoReg);
 
     usuarios.push(usuarioReg);
+    alert("Usuario registrado correctamente");
 }
 
 const mostrar = () => { // Mostrando a los usuarios de la Base de Datos
@@ -79,12 +106,13 @@ const mostrar = () => { // Mostrando a los usuarios de la Base de Datos
         alert("No hay nada que mostrar...");
     }
     else {
-        console.clear(); // Limpiamos consola
-        alert("Se mostraran en la consola");
-        console.log("Name, Password, Email, Age, Time of register")
-        for (const usuario of usuarios) {
-            console.log(`${usuario.name}, ${usuario.password}, ${usuario.email}, ${usuario.age}, ${usuario.tm_reg}`); // Comillas invertidas para esta sintaxis
-        }
+        
+        let listaUsuarios = "Name, Password, Email, Age, Time of register\n";
+
+        usuarios.forEach((usuario) => {
+            listaUsuarios += `${usuario.name}, ${usuario.password}, ${usuario.email}, ${usuario.age}, ${usuario.tm_reg}\n`; // Comillas invertidas para esta sintaxis
+        });
+        alert(listaUsuarios);
     }
 }
 
@@ -94,14 +122,23 @@ const eliminar = () => { // Eliminar usuario de la Base de Datos
     }
     else {
         let emailDel = prompt("Ingresa el email a eliminar: ");
+        let usuarioFueEliminado = false;
     
-        for (let usuario of usuarios) {
-            if (usuario.email === emailDel) {
-                let pos = usuarios.indexOf(usuario);
-                usuarios.splice(pos, 1);
-                break;
+        usuarios = usuarios.filter((usuario) => { //Solo eliminara al que de false;
+            if (usuario.email !== emailDel) {
+                return true;
+            } else {
+                usuarioFueEliminado = true;
+                return false;
             }
+        });
+
+        if (usuarioFueEliminado) {
+            alert("Usuario fue eliminado exitosamente.");
+        } else {
+            alert("Email no encontrado.");
         }
+
     }
 }
 
@@ -111,20 +148,29 @@ const vaciar = () => { // Vacear Base de Datos
 }
 
 const buscar = () => {
-    let emailBusc = prompt("Ingresa el email a buscar: ");
-    
-    let resultado = usuarios.find((usuario) => usuario.email === emailBusc);
-
-    console.log(`${resultado.name}, ${resultado.password}, ${resultado.email}, ${resultado.age}, ${resultado.tm_reg}`);
+    if (estaUsuariosVacio()) {
+        alert("No hay nada que buscar");
+    } else {
+        let emailBusc = prompt("Ingresa el email a buscar: ");
+        let resultado = usuarios.find((usuario) => usuario.email === emailBusc);
+        
+        if (resultado) {
+            console.log(`${resultado.name}, ${resultado.password}, ${resultado.email}, ${resultado.age}, ${resultado.tm_reg}`);
+        } else {
+            alert("No se encontro el email");
+        }
+    }
 }
 
 const ordenarPorEdad = () => {
 
-    let opc;
+    if (estaUsuariosVacio()) {
+        alert("No hay nada que ordenar");
+    } else {
 
-    do {
-
-        opc = parseInt(prompt("Ingresa una opcion: "));
+        let opc;
+    
+        opc = parseInt(prompt("Ingresa una opción:\n1. Ordenar de menor a mayor\n2. Ordenar de mayor a menor"));
 
         if (opc === 1) {
             usuarios.sort((a, b) => a.age - b.age);
@@ -135,8 +181,9 @@ const ordenarPorEdad = () => {
         } else {
             alert("Opcion no disponible");
         }
+    
+    }
 
-    } while (opc != 1 && opc != 2);
 
 }
 
