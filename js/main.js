@@ -68,7 +68,6 @@ const registrar = () => { //Registrando
     let emailReg = prompt("Coloca tu email: ")
     let edadReg = prompt("Coloca tu edad: ")
     let tiempoReg = new Date();
-    
 
     let usuarioReg = new Usuario(nombreReg, contrasenaReg, emailReg, edadReg, tiempoReg);
 
@@ -111,6 +110,36 @@ const vaciar = () => { // Vacear Base de Datos
     alert("Se ha vaciado la base de datos...");
 }
 
+const buscar = () => {
+    let emailBusc = prompt("Ingresa el email a buscar: ");
+    
+    let resultado = usuarios.find((usuario) => usuario.email === emailBusc);
+
+    console.log(`${resultado.name}, ${resultado.password}, ${resultado.email}, ${resultado.age}, ${resultado.tm_reg}`);
+}
+
+const ordenarPorEdad = () => {
+
+    let opc;
+
+    do {
+
+        opc = parseInt(prompt("Ingresa una opcion: "));
+
+        if (opc === 1) {
+            usuarios.sort((a, b) => a.age - b.age);
+            alert("Se ha ordenado las edades de menor a mayor");
+        } else if (opc === 2){
+            usuarios.sort((a, b) => b.age - a.age);
+            alert("Se ha ordenado las edades de mayor a menor");
+        } else {
+            alert("Opcion no disponible");
+        }
+
+    } while (opc != 1 && opc != 2);
+
+}
+
 const salir = () => { // Saliendo del Menu
     alert("Haz salido del programa..."); // Tambien se podria hacer en una sola linea omitiendo las llaves al ser 1 instruccion
 }
@@ -123,17 +152,26 @@ function BASE_DE_DATOS() {
 
     do {
 
-        opc = parseInt(prompt("Igresa una opcion:\n1. Registrar\n2. Mostrar\n3. Eliminar\n4. Vaciar\n0. Salir"));
+        opc = parseInt(prompt("Igresa una opcion:\n1. Registrar\n2. Mostrar\n3. Eliminar\n4. Vaciar\n5. Buscar\n6. Ordenar por edad\n0. Salir"));
 
         switch (opc) {
             case 1: registrar(); break;
             case 2: mostrar(); break;
             case 3: eliminar(); break;
             case 4: vaciar(); break;
+            case 5: buscar(); break;
+            case 6: ordenarPorEdad(); break;
             case 0: salir(); break;
             default: alert("Ingrese una opcion valida..."); break;
         }
 
     } while (opc != 0);
 }
+
+
+
+
+
+
+
 
